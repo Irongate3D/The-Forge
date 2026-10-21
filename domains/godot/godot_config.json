@@ -1,0 +1,31 @@
+{
+  "domain": "godot",
+  "description": "Godot 4 / GDScript specialist training data",
+  "base_model": "unsloth/Qwen2.5-7B-Instruct",
+  "formatter": "devstral",
+  "quality_threshold": 0.85,
+  "notes": [
+    "Focus on GDScript 4 syntax only — not GDScript 2 / Godot 3",
+    "Good sources: docs.godotengine.org, godotrecipes.com, kidscancode.org/godot_recipes",
+    "Add URLs to watch/urls.txt — one per line",
+    "Drop PDFs into watch/pdfs/",
+    "Drop MP4 tutorial videos into watch/mp4s/",
+    "Drop zipped code examples into watch/zips/"
+  ],
+  "seed_urls": [
+    "https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html",
+    "https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_advanced.html",
+    "https://docs.godotengine.org/en/stable/tutorials/3d/index.html",
+    "https://docs.godotengine.org/en/stable/tutorials/physics/index.html",
+    "https://docs.godotengine.org/en/stable/tutorials/animation/index.html",
+    "https://docs.godotengine.org/en/stable/classes/index.html"
+  ],
+  "training": {
+    "steps": 300,
+    "batch_size": 2,
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "learning_rate": 2e-4,
+    "warmup_steps": 20
+  }
+}

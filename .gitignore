@@ -5,6 +5,7 @@ __pycache__/
 .venv/
 venv/
 .env
+.zip
 
 # Forge runtime state and data (never commit these)
 pause.flag
