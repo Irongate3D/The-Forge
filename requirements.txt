@@ -1,0 +1,6 @@
+requests
+beautifulsoup4
+pdfplumber
+openai-whisper   # only needed for MP4 transcription
+pystray          # only needed for the Windows tray app
+pillow           # only needed for the Windows tray app

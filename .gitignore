@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+
+# Forge runtime state and data (never commit these)
+pause.flag
+tray_status.json
+domains/*/queue/
+domains/*/datasets/
+domains/*/logs/
+domains/*/watch/
+domains/*/done/
+
+# Source material and model artefacts
+*.jsonl
+*.gguf
+*.safetensors
+*.mp4
+*.wav
+*.pdf
+*.zip
