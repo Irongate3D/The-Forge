@@ -46,7 +46,7 @@ domains/godot/
 - Python 3.10+
 - [LM Studio](https://lmstudio.ai) serving a chat model with the OpenAI-compatible API
 - `ffmpeg` on PATH (MP4 only)
-- `pip install -r requirements.txt`
+- `pip install -r requirements.txt`. On an AMD GPU, install the ROCm build of PyTorch first, because installing `openai-whisper` can otherwise pull in a CUDA build
 
 ## Configuration
 
@@ -78,9 +78,13 @@ To pause safely, create a file named `pause.flag` in the Forge root. The pipelin
 
 `forge_tray.py` is a system-tray controller (run, pause, stop, retry, switch domain, open folders) that launches the pipeline inside WSL2. It needs `pystray` and `pillow` installed in Windows Python.
 
+## Training
+
+`training/train_godot.py` fine-tunes Qwen2.5-3B-Instruct on the pairs this pipeline produces (Unsloth LoRA, AMD ROCm). See [`training/README.md`](training/README.md) for the setup, results and known limitations.
+
 ## Scope and limitations
 
-- This repo covers **training-data generation only**. Fine-tuning (Unsloth LoRA on ROCm) and GGUF conversion are separate and not included here.
+- The pipeline itself generates training data. A fine-tuning script (Unsloth LoRA on ROCm) lives in [`training/`](training/). GGUF merge and quantisation scripts are not included yet, and no trained weights are published.
 - Quality control is heuristic. There is no model-based grading and no semantic deduplication in this repo.
 - The web crawler does not read `robots.txt` yet and the queue assumes a single process.
 - Output quality depends on the local model you use for formatting. Review samples before training on them.
