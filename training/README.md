@@ -8,7 +8,7 @@
 |---|---|
 | Base model | Qwen2.5-3B-Instruct, loaded in 4-bit from a local folder (no network calls) |
 | Method | LoRA, rank 16, alpha 16, all attention and MLP projection layers |
-| Training | 3 epochs, learning rate 2e-4, batch size 2 with 4 gradient-accumulation steps (effective batch 8), AdamW 8-bit, max sequence length 2048, seed 42 |
+| Training | 3 epochs configured, learning rate 2e-4, batch size 2 with 4 gradient-accumulation steps (effective batch 8), AdamW 8-bit, max sequence length 2048, seed 42 |
 | Prompt format | Alpaca-style `### Instruction / ### Response` template with the tokenizer's EOS token |
 | Hardware | Radeon RX 7900 XTX, ROCm 7.1, PyTorch 2.10.0, WSL2 |
 
@@ -35,7 +35,27 @@ Install Unsloth and PyTorch following Unsloth's instructions for your hardware. 
 
 ## Results
 
-Training loss fell from about 2.36 to about 0.52 over the run. The adapters were then merged to float16, converted to GGUF and quantised to Q4_K_M with llama.cpp for use in LM Studio. The merge and conversion scripts are not in this repository yet, and the trained weights are not published.
+Training loss fell from about 2.36 to about 0.52 over the run. The evaluated model was merged from `checkpoint-1910`. For 7,640 pairs at an effective batch of 8 there are 955 steps per epoch, so step 1910 is two epochs' worth of training, even though the script is configured for three. The trained weights are not published.
+
+## Merging and exporting to GGUF
+
+`merge_to_gguf.py` loads the adapters from a checkpoint, merges them into the base model as float16, converts the result to GGUF with llama.cpp, and quantises it to Q4_K_M for LM Studio.
+
+Requirements:
+
+- llama.cpp cloned and built with HIP for AMD GPUs (see llama.cpp's `docs/build.md`; the script prints a starting command if it cannot find the build)
+- a separate Python environment for llama.cpp's conversion script, not the Unsloth environment
+
+| Variable | Default |
+|---|---|
+| `GODOT_LORA_CHECKPOINT` | `/mnt/d/Irongate/models/godot-lora/checkpoint-1910` |
+| `GODOT_MERGED_OUT` | `/mnt/d/Irongate/models/godot-merged` |
+| `GODOT_GGUF_OUT` | `/mnt/d/Irongate/models/godot-gguf` |
+| `LLAMA_CPP` | `/mnt/d/Irongate/llama.cpp` |
+| `LLAMA_ENV_PYTHON` | `/root/llama-env/bin/python` (falls back to `~/llama-env/bin/python`) |
+| `KEEP_F16` | unset. Set to `1` to keep the f16 GGUF; by default it is deleted after quantising |
+
+The merge writes about 6 GB, which is slow on an NTFS mount under WSL2.
 
 ## Known limitations
 
@@ -51,4 +71,5 @@ A second run is planned to target these failure modes (cleaner data for the Godo
 ## Notes
 
 - The model was trained with an Alpaca-style prompt template, not Qwen's chat template. When serving it, use a matching prompt template or answers may degrade.
+- `merge_to_gguf.py` prints a suggested LM Studio system prompt that tells the model to use Godot 4 / GDScript 4 syntax.
 - Review generated training data before training on it. Model-written pairs can contain wrong API calls.

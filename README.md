@@ -80,11 +80,11 @@ To pause safely, create a file named `pause.flag` in the Forge root. The pipelin
 
 ## Training
 
-`training/train_godot.py` fine-tunes Qwen2.5-3B-Instruct on the pairs this pipeline produces (Unsloth LoRA, AMD ROCm). See [`training/README.md`](training/README.md) for the setup, results and known limitations.
+`training/train_godot.py` fine-tunes Qwen2.5-3B-Instruct on the pairs this pipeline produces (Unsloth LoRA, AMD ROCm). `training/merge_to_gguf.py` then merges the adapters and exports a quantised GGUF. See [`training/README.md`](training/README.md) for the setup, results and known limitations.
 
 ## Scope and limitations
 
-- The pipeline itself generates training data. A fine-tuning script (Unsloth LoRA on ROCm) lives in [`training/`](training/). GGUF merge and quantisation scripts are not included yet, and no trained weights are published.
+- The pipeline itself generates training data. A fine-tuning script (Unsloth LoRA on ROCm) lives in [`training/`](training/). `training/merge_to_gguf.py` merges the adapters and exports a quantised GGUF for LM Studio. No trained weights are published.
 - Quality control is heuristic. There is no model-based grading and no semantic deduplication in this repo.
 - The web crawler does not read `robots.txt` yet and the queue assumes a single process.
 - Output quality depends on the local model you use for formatting. Review samples before training on them.
